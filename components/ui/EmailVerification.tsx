@@ -5,7 +5,7 @@ import { useAppDispatch } from '../redux/store';
 import Logout from './Logout';
 import { useAuth } from '../useAuth';
 import Input from '@/components/ui/Input';
-import LoginWithGoogleButton from './LoginWithGoogleButton';
+import LinkWithGoogleButton from './LinkWithGoogleButton';
 import LoadingButton from '@/components/ui/LoadingButton';
 import ToastBox from './ToastBox';
 import { loginWithEmail, useIsLoginWithEmailLoading } from '../redux/auth/loginWithEmail';
@@ -23,12 +23,12 @@ const EmailVerification = () => {
     const isLoadingEmail = useIsLoginWithEmailLoading();
     const [disableSubmitEmail, setDisableSubmitEmail] = useState(true);
     const router = useRouter();
-    // Associate the email and password to the user and redirecting to home page
-    const associateEmail = useCallback(async () => {
+    // Link the email and password to the user and redirecting to home page
+    const linkEmail = useCallback(async () => {
         if (auth.type !== LoadingStateTypes.LOADED) return;
         dispatch(
             loginWithEmail({
-                type: 'associate',
+                type: 'link',
                 auth,
                 email,
                 password,
@@ -84,23 +84,23 @@ const EmailVerification = () => {
                             type="password"
                         />
                         <LoadingButton
-                            onClick={associateEmail}
+                            onClick={linkEmail}
                             loading={isLoadingEmail}
                             disabled={disableSubmitEmail}
                             loadingText="Associating e-mail"
                         >
-                            Associate e-mail 
+                            Link e-mail 
                         </LoadingButton>
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-gray-300" />
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="bg-white px-2 text-gray-500">Or associate with</span>
+                                <span className="bg-white px-2 text-gray-500">Or link with</span>
                             </div>
                         </div>
                         <div className="mt-2 grid grid-cols-1 gap-3">
-                            <LoginWithGoogleButton />
+                            <LinkWithGoogleButton />
                         </div>
                     </div>
                     <div className="flex w-full flex-col">

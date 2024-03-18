@@ -10,7 +10,7 @@ import { AuthContextType } from '@/components/useAuth';
 
 export const loginWithEmail = createAsyncThunk(
     'loginEmail',
-    async (args: { type: 'login' | 'sign-up' | 'associate'; auth: AuthContextType | null; email: string; password: string;
+    async (args: { type: 'login' | 'sign-up' | 'link'; auth: AuthContextType | null; email: string; password: string;
     callback: (
         args:
             | { type: 'success'; }
@@ -43,14 +43,14 @@ export const loginWithEmail = createAsyncThunk(
             if (args.type === 'sign-up') {
                 await createUserWithEmailAndPassword(firebaseAuth, args.email, args.password);
             }
-            if (args.type === 'associate' && args.auth?.type === LoadingStateTypes.LOADED){
+            if (args.type === 'link' && args.auth?.type === LoadingStateTypes.LOADED){
 
                     await updatePassword(args.auth.user, args.password);
                     await updateEmail(args.auth.user, args.email);
 
                     dispatch(
                         showToast({
-                            message: 'Email and password associated succesfully',
+                            message: 'Email and password linked succesfully',
                             type: 'success',
                         })
                     );
