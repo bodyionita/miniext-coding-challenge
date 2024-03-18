@@ -4,7 +4,6 @@ import { firebaseAuth } from '@/components/firebase/firebaseAuth';
 import { useEffect, useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import { useRouter } from 'next/navigation';
-import ToastBox from '@/components/ui/ToastBox';
 import { useAppDispatch } from '@/components/redux/store';
 import { showToast } from '@/components/redux/toast/toastSlice';
 import Input from '@/components/ui/Input';
@@ -18,6 +17,7 @@ import {
     useVerifyPhoneNumberLoading,
     verifyPhoneNumber,
 } from '../redux/auth/verifyPhoneNumber';
+import ToastBox from './ToastBox';
 
 const PhoneVerification = () => {
     const dispatch = useAppDispatch();
@@ -61,6 +61,7 @@ const PhoneVerification = () => {
         if (auth.type !== LoadingStateTypes.LOADED) return;
         dispatch(
             verifyPhoneNumber({
+                type: "login",
                 auth,
                 OTPCode,
                 verificationId,

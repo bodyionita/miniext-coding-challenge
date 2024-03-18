@@ -3,6 +3,7 @@ import {
     PhoneAuthProvider,
     RecaptchaVerifier,
     linkWithPhoneNumber,
+    signInWithCredential,
     updatePhoneNumber,
 } from 'firebase/auth';
 import { getFriendlyMessageFromFirebaseErrorCode } from './helpers';
@@ -90,9 +91,10 @@ export const verifyPhoneNumber = createAsyncThunk(
     'verifyPhoneNumber',
     async (
         args: {
-            OTPCode: string;
-            auth: AuthContextType;
-            verificationId: string;
+            type: 'login' | 'sign-up',
+            OTPCode: string,
+            auth: AuthContextType | null,
+            verificationId: string,
             callback: (
                 args:
                     | { type: 'success' }
@@ -104,25 +106,40 @@ export const verifyPhoneNumber = createAsyncThunk(
         },
         { dispatch }
     ) => {
+        console.log("Validating otp");
+        console.log(args.OTPCode);
+        console.log(args.verificationId);
+        console.log(args.type);
+        console.log(args.auth);
         if (
             args.OTPCode === null ||
             !args.verificationId ||
-            args.auth.type !== LoadingStateTypes.LOADED
+            (args.type === 'login' && args.auth?.type !== LoadingStateTypes.LOADED)
         )
             return;
-
+        
         try {
             const credential = PhoneAuthProvider.credential(args.verificationId, args.OTPCode);
-            await updatePhoneNumber(args.auth.user, credential);
+            if (args.type === 'login' && args.auth?.type === LoadingStateTypes.LOADED) {
+                await updatePhoneNumber(args.auth.user, credential);
 
-            firebaseAuth.currentUser?.reload();
+                dispatch(
+                    showToast({
+                        message: 'Logged in Successfully',
+                        type: 'success',
+                    })
+                );
+            } else {
+                await signInWithCredential(firebaseAuth, credential);
+                dispatch(
+                    showToast({
+                        message: 'Sign-up Successfully',
+                        type: 'success',
+                    })
+                );
+            }
 
-            dispatch(
-                showToast({
-                    message: 'Logged in Successfully',
-                    type: 'success',
-                })
-            );
+            firebaseAuth. currentUser?.reload();            
 
             args.callback({ type: 'success' });
         } catch (error: any) {

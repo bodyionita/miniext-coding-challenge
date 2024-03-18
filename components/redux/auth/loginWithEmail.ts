@@ -7,7 +7,7 @@ import isEmail from 'validator/lib/isEmail';
 import { useAppSelector } from '../store';
 
 export const loginWithEmail = createAsyncThunk(
-    'login',
+    'loginEmail',
     async (args: { type: 'login' | 'sign-up'; email: string; password: string }, { dispatch }) => {
         try {
             if (!isEmail(args.email)) {
