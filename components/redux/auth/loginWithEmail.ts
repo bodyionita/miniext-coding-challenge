@@ -44,7 +44,7 @@ export const loginWithEmail = createAsyncThunk(
                 await createUserWithEmailAndPassword(firebaseAuth, args.email, args.password);
             }
             if (args.type === 'link' && args.auth?.type === LoadingStateTypes.LOADED){
-
+                    
                     await updatePassword(args.auth.user, args.password);
                     await updateEmail(args.auth.user, args.email);
 

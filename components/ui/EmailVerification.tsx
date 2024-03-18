@@ -13,11 +13,12 @@ import React from 'react';
 import { isEmail } from 'validator';
 import { LoadingStateTypes } from '../redux/types';
 import { useRouter } from 'next/navigation';
-import { logout } from '../redux/auth/logOut';
+import Modal from './Modal';
 
 const EmailVerification = () => {  
     const dispatch = useAppDispatch();  
     const auth = useAuth();
+    const [show, setShow] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const isLoadingEmail = useIsLoginWithEmailLoading();
@@ -34,7 +35,8 @@ const EmailVerification = () => {
                 password,
                 callback: (result) => {
                     if (result.type === 'error') {
-                        dispatch(logout());
+                        setShow(true);
+                        return;
                     }
                     // needed to reload auth user
                     router.refresh();
@@ -103,6 +105,19 @@ const EmailVerification = () => {
                             <LinkWithGoogleButton />
                         </div>
                     </div>
+                    <Modal show={show} setShow={setShow}>
+                        <div className="max-w-md w-full bg-white py-6 rounded-lg">
+                            <h2 className="text-lg font-semibold text-center mb-10">
+                                Please logout and sign back in to link your email.
+                            </h2>
+                            <div className="px-4 flex items-center gap-4 pb-10">
+                                <div className="flex w-full flex-col">
+                                    <Logout />
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
+
                     <div className="flex w-full flex-col">
                         <Logout />
                     </div>
