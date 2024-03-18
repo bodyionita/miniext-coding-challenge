@@ -139,7 +139,7 @@ export const verifyPhoneNumber = createAsyncThunk(
                 );
             }
 
-            firebaseAuth. currentUser?.reload();            
+            firebaseAuth.currentUser?.reload();            
 
             args.callback({ type: 'success' });
         } catch (error: any) {
