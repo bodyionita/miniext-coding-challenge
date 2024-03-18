@@ -106,11 +106,6 @@ export const verifyPhoneNumber = createAsyncThunk(
         },
         { dispatch }
     ) => {
-        console.log("Validating otp");
-        console.log(args.OTPCode);
-        console.log(args.verificationId);
-        console.log(args.type);
-        console.log(args.auth);
         if (
             args.OTPCode === null ||
             !args.verificationId ||
@@ -130,6 +125,7 @@ export const verifyPhoneNumber = createAsyncThunk(
                     })
                 );
             } else {
+                // Signing up with the phone number
                 await signInWithCredential(firebaseAuth, credential);
                 dispatch(
                     showToast({

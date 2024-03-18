@@ -23,11 +23,14 @@ interface SignUpModalProps {
 }
 const SignUpModal = (props: SignUpModalProps) => {
     const dispatch = useAppDispatch();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [disableSubmitEmail, setDisableSubmitEmail] = useState(true);
     const [disableSubmitPhone, setDisableSubmitPhone] = useState(true);
+    const isLoadingEmail = useIsLoginWithEmailLoading();
+    const isLoadingPhone = useIsLoginWithPhoneNumberLoading();
 
     const [OTPCode, setOTPCode] = useState('');
     const [show, setShow] = useState(false);
@@ -37,11 +40,10 @@ const SignUpModal = (props: SignUpModalProps) => {
     const [recaptcha, setRecaptcha] = useState<RecaptchaVerifier | null>(null);
     const [recaptchaResolved, setRecaptchaResolved] = useState(false);
     const [verificationId, setVerificationId] = useState('');
-
-    const isLoadingEmail = useIsLoginWithEmailLoading();
-    const isLoadingPhone = useIsLoginWithPhoneNumberLoading();
+    
     const router = useRouter();
 
+    // Realtime validation to enable submit button
     useEffect(() => {
         if (isEmail(email) && password.length >= 6) {
             setDisableSubmitEmail(false);
@@ -60,7 +62,7 @@ const SignUpModal = (props: SignUpModalProps) => {
 
     // generating the recaptcha on page render
     useEffect(() => {
-        const captcha = new RecaptchaVerifier(firebaseAuth, 'recaptcha-container', {
+        const captcha = new RecaptchaVerifier(firebaseAuth, 'recaptcha-container-sign-up', {
             size: 'normal',
             callback: () => {
                 setRecaptchaResolved(true);
@@ -108,8 +110,14 @@ const SignUpModal = (props: SignUpModalProps) => {
         dispatch(
             loginWithEmail({
                 type: 'sign-up',
+                auth: null,
                 email,
                 password,
+                callback: (result) => {
+                    if (result.type === 'error') {
+                       return;
+                    }
+                },
             })
         );
 
@@ -140,12 +148,12 @@ const SignUpModal = (props: SignUpModalProps) => {
                         setRecaptchaResolved(false);
                         return;
                     }
+                    // get the verification id for the OTP validation
                     setVerificationId(result.verificationId);
                     setShow(true);
                 },
             })
         );
-        setShow(true);
         /* eslint-disable-next-line react-hooks/exhaustive-deps */
     }, [phoneNumber, recaptcha, dispatch]);
 
@@ -190,7 +198,7 @@ const SignUpModal = (props: SignUpModalProps) => {
                         name="phoneNumber"
                         type="text"
                     />
-                    <div id="recaptcha-container" />
+                    <div id="recaptcha-container-sign-up" />
                     <LoadingButton
                         onClick={signUpWithPhoneNumber}
                         disabled={disableSubmitPhone}

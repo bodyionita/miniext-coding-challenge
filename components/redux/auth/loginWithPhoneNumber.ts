@@ -41,7 +41,6 @@ export const loginWithPhoneNumber = createAsyncThunk(
                 return;
             }
             const confirmationCode = await signInWithPhoneNumber(firebaseAuth, args.phoneNumber, args.recaptcha);
-            console.log(confirmationCode);
             if (args.callback)
                 args.callback({
                     type: 'success',

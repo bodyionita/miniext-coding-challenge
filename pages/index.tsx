@@ -5,6 +5,7 @@ import Logout from '@/components/ui/Logout';
 import { useEffect } from 'react';
 import { LoadingStateTypes } from '@/components/redux/types';
 import PhoneVerification from '@/components/ui/PhoneVerification';
+import EmailVerification from '@/components/ui/EmailVerification';
 import { useHomePage } from '@/components/redux/homePage/homePageSelectors';
 import { fetchHomePageData } from '@/components/redux/homePage/fetchHomePageData';
 import { useAppDispatch } from '@/components/redux/store';
@@ -86,7 +87,7 @@ export function Home() {
     if (auth.type === LoadingStateTypes.LOADED && auth.user != null)
     {
         if (auth.user.phoneNumber == null) data = (<PhoneVerification />);
-        if (auth.user.email == null) data = (<div><p>Add email && password required</p></div>);
+        if (auth.user.email == null) data = (<EmailVerification />);
     }
 
     return (
